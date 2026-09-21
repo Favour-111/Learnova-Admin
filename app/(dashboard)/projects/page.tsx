@@ -88,7 +88,7 @@ function slugify(label: string): string {
   return label.trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "") || `req_${Date.now()}`;
 }
 
-// Simple "type, press Add or Enter" list editor — reused for learning
+// Simple "type, press Add or Enter" list editor  reused for learning
 // objectives, requirements, and technologies so those don't need their own
 // bespoke components.
 function ListEditor({
@@ -205,7 +205,7 @@ export default function ProjectsPage() {
           toast("success", "Project created");
           closeModal();
         },
-        onError: () => toast("error", "Couldn't create the project — does this module already have one?"),
+        onError: () => toast("error", "Couldn't create the project  does this module already have one?"),
       });
     } else if (editing) {
       update.mutate(
@@ -236,7 +236,7 @@ export default function ProjectsPage() {
     <div>
       <PageHeader
         title="Projects"
-        subtitle="Practical projects with a configurable rubric — evaluated automatically from a GitHub submission."
+        subtitle="Practical projects with a configurable rubric  evaluated automatically from a GitHub submission."
         action={
           <Button onClick={openCreate}>
             <Plus size={16} /> Add Project
@@ -396,7 +396,7 @@ export default function ProjectsPage() {
 
           <div className="rounded-xl border border-border p-4 sm:col-span-2">
             <p className="mb-2 text-sm font-semibold text-textPrimary">
-              Evaluation rubric weights (must total 100% — currently {totalWeight}%)
+              Evaluation rubric weights (must total 100%  currently {totalWeight}%)
             </p>
             <div className="space-y-2">
               {form.rubric.map((criterion, index) => (

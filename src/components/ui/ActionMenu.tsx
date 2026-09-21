@@ -10,7 +10,7 @@ export interface ActionMenuItem {
 }
 
 // The "•••" menu every table row's actions route through instead of a row
-// full of separate buttons — closes on outside click or ESC.
+// full of separate buttons  closes on outside click or ESC.
 export function ActionMenu({ items }: { items: ActionMenuItem[] }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);

@@ -41,7 +41,7 @@ export default function NotificationsPage() {
     },
   });
 
-  // Reuses the same query key as the dashboard's stat card — shares its
+  // Reuses the same query key as the dashboard's stat card  shares its
   // cache instead of firing a second request just to show a user count.
   const dashboard = useQuery({
     queryKey: ["admin", "dashboard"],
@@ -90,7 +90,7 @@ export default function NotificationsPage() {
 
       <DataTable
         columns={[
-          { header: "User", render: (n) => n.user?.name ?? "—" },
+          { header: "User", render: (n) => n.user?.name ?? "" },
           { header: "Type", render: (n) => n.type },
           { header: "Title", render: (n) => n.title },
           { header: "Read", render: (n) => (n.isRead ? "Yes" : "No") },
@@ -163,8 +163,8 @@ export default function NotificationsPage() {
         title="Send to everyone?"
         message={
           dashboard.data
-            ? `This will immediately notify all ${dashboard.data.userCount} users — push notification and in-app. This can't be undone.`
-            : "This will immediately notify every user — push notification and in-app. This can't be undone."
+            ? `This will immediately notify all ${dashboard.data.userCount} users  push notification and in-app. This can't be undone.`
+            : "This will immediately notify every user  push notification and in-app. This can't be undone."
         }
         confirmLabel="Send Announcement"
         destructive={false}

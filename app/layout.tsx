@@ -16,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <ClerkProvider afterSignOutUrl="/sign-in">
       {/* suppressHydrationWarning here only: browser extensions (password
           managers, ad blockers, etc.) commonly inject attributes onto
-          <html>/<body> before React hydrates — this is React's documented
+          <html>/<body> before React hydrates  this is React's documented
           workaround for that specific, unavoidable class of mismatch. It
           does not suppress mismatches in children. */}
       <html lang="en" suppressHydrationWarning className={inter.variable}>

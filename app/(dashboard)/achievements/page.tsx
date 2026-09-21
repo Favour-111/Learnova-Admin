@@ -48,7 +48,7 @@ interface Achievement {
 type AchievementForm = Omit<Achievement, "_id">;
 
 // Same icons8 "3d-fluency" set the mobile app's Progress screen already
-// uses for achievement badges — templates below point straight at these so
+// uses for achievement badges  templates below point straight at these so
 // picking a template gives a real image immediately, with the field still
 // free-text if the admin wants to paste something else instead.
 const ICON_3D = {
@@ -85,7 +85,7 @@ const CATEGORY_OPTIONS: { value: Category; label: string }[] = [
 ];
 
 // Every metric the backend evaluator (backend/src/services/achievements.ts)
-// knows how to compute from real user data — this list must stay in sync
+// knows how to compute from real user data  this list must stay in sync
 // with that file's METRICS map. Picking one here is the entire "logic" an
 // achievement needs; no code change is required to use any of these.
 const METRIC_OPTIONS: { value: Metric; label: string }[] = [
@@ -123,11 +123,11 @@ interface Template {
   description: (value: number) => string;
 }
 
-// Common achievement "shapes" — picking one fills in category/type/icon/
+// Common achievement "shapes"  picking one fills in category/type/icon/
 // metric/operator plus a suggested name+description for the default
 // amount, so creating e.g. a streak achievement is "pick Streak, type the
 // number of days" instead of hand-picking every field from scratch. Still
-// fully editable afterward — this is just a starting point, not a
+// fully editable afterward  this is just a starting point, not a
 // separate code path.
 const TEMPLATES: Template[] = [
   {
@@ -273,7 +273,7 @@ export default function AchievementsPage() {
   const [form, setForm] = useState<AchievementForm>(EMPTY_FORM);
   const [pendingDelete, setPendingDelete] = useState<Achievement | null>(null);
   // "custom" = no template applied (or an existing achievement being
-  // edited) — once a template is picked, changing the Required Value below
+  // edited)  once a template is picked, changing the Required Value below
   // keeps regenerating the name/description for that template's wording.
   const [templateId, setTemplateId] = useState<string>("custom");
 
@@ -307,7 +307,7 @@ export default function AchievementsPage() {
       return data;
     },
     onSuccess: (data) => {
-      toast("success", `Recalculated ${data.usersProcessed} users — ${data.achievementsUnlocked} new unlock(s).`);
+      toast("success", `Recalculated ${data.usersProcessed} users  ${data.achievementsUnlocked} new unlock(s).`);
     },
     onError: () => toast("error", "Couldn't recalculate achievements"),
   });
@@ -395,7 +395,7 @@ export default function AchievementsPage() {
     <div>
       <PageHeader
         title="Achievements"
-        subtitle="Badges learners unlock — fully data-driven, no app update needed."
+        subtitle="Badges learners unlock  fully data-driven, no app update needed."
         action={
           <div className="flex items-center gap-2">
             <Button variant="ghost" onClick={() => recalculateAll.mutate()} loading={recalculateAll.isPending}>
@@ -476,7 +476,7 @@ export default function AchievementsPage() {
       >
         <form id="achievement-form" className="grid grid-cols-1 gap-4 sm:grid-cols-2" onSubmit={handleSubmit}>
           <div className="sm:col-span-2">
-            <Field label="Template (optional — fills in the fields below for you)">
+            <Field label="Template (optional  fills in the fields below for you)">
               <Select value={templateId} onChange={(e) => applyTemplate(e.target.value)}>
                 <option value="custom">Custom (pick everything manually)</option>
                 {TEMPLATES.map((t) => (
@@ -515,7 +515,7 @@ export default function AchievementsPage() {
                 <img src={form.icon} alt="" className="h-10 w-10 shrink-0 rounded-lg border border-border object-cover" />
               ) : (
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-backgroundAlt text-xs text-textMuted">
-                  —
+                  
                 </div>
               )}
               <Input

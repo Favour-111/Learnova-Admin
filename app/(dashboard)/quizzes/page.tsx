@@ -10,7 +10,9 @@ import { Field, Input, Select, Textarea, Button } from "@/components/form";
 import { Modal } from "@/components/ui/Modal";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { ActionMenu } from "@/components/ui/ActionMenu";
+import { Badge } from "@/components/ui/Badge";
 import { SearchInput } from "@/components/ui/SearchInput";
+import { ImageUploadField } from "@/components/ImageUploadField";
 import { useToast } from "@/components/ui/Toast";
 import { useAdminCrud } from "@/hooks/useAdminCrud";
 import { api } from "@/lib/api";
@@ -21,37 +23,80 @@ interface CourseModule {
   course: string;
 }
 
+interface Category {
+  _id: string;
+  name: string;
+}
+
 interface Quiz {
   _id: string;
   title: string;
-  module: string;
+  module?: string;
+  category?: string;
+  description?: string;
+  imageUrl?: string;
+  topics?: string[];
+  estimatedMinutes?: number;
   passingScorePercent: number;
   xpReward: number;
   creditReward: number;
+  isPublished: boolean;
 }
 
-type QuizForm = { title: string; module: string; passingScorePercent: number; xpReward: number; creditReward: number };
-const EMPTY_FORM: QuizForm = { title: "", module: "", passingScorePercent: 70, xpReward: 50, creditReward: 20 };
+type QuizForm = {
+  title: string;
+  module: string;
+  category: string;
+  description: string;
+  imageUrl: string;
+  topics: string;
+  estimatedMinutes: number;
+  passingScorePercent: number;
+  xpReward: number;
+  creditReward: number;
+};
+const EMPTY_FORM: QuizForm = {
+  title: "",
+  module: "",
+  category: "",
+  description: "",
+  imageUrl: "",
+  topics: "",
+  estimatedMinutes: 5,
+  passingScorePercent: 70,
+  xpReward: 50,
+  creditReward: 20,
+};
 
 // Generating a full question set is a real 20-30s round trip to OpenAI (a
-// reasoning model, not a quick completion) — well past the API client's
+// reasoning model, not a quick completion)  well past the API client's
 // normal 20s default, so these two calls get their own generous timeout.
 const AI_GENERATION_TIMEOUT_MS = 120000;
 
 function aiErrorMessage(err: unknown) {
   if (axios.isAxiosError(err)) {
-    if (err.code === "ECONNABORTED") return "The AI is taking longer than expected — try again, or ask for fewer questions.";
+    if (err.code === "ECONNABORTED") return "The AI is taking longer than expected  try again, or ask for fewer questions.";
     const serverMessage = (err.response?.data as { error?: string } | undefined)?.error;
     if (serverMessage) return serverMessage;
   }
-  return "AI request failed — check the OpenAI configuration and try again.";
+  return "AI request failed  check the OpenAI configuration and try again.";
 }
 
 export default function QuizzesPage() {
   const { list, create, update, remove } = useAdminCrud<Quiz>("quizzes");
   const modules = useAdminCrud<CourseModule>("modules");
+  const categories = useAdminCrud<Category>("categories");
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  const togglePublish = (q: Quiz) =>
+    update.mutate(
+      { id: q._id, body: { isPublished: !q.isPublished } as never },
+      {
+        onSuccess: () => toast("success", "Quiz status updated"),
+        onError: () => toast("error", "Couldn't update quiz status"),
+      }
+    );
 
   const [search, setSearch] = useState("");
   const [editing, setEditing] = useState<Quiz | "new" | null>(null);
@@ -72,7 +117,7 @@ export default function QuizzesPage() {
     },
     onSuccess: (questions) => {
       queryClient.invalidateQueries({ queryKey: ["admin", "questions"] });
-      toast("success", `Generated ${questions.length} question${questions.length === 1 ? "" : "s"} — existing questions for this quiz were replaced.`);
+      toast("success", `Generated ${questions.length} question${questions.length === 1 ? "" : "s"}  existing questions for this quiz were replaced.`);
       setGeneratingFor(null);
       setGenTopic("");
       setGenCount(20);
@@ -80,7 +125,7 @@ export default function QuizzesPage() {
     onError: (err) => toast("error", aiErrorMessage(err)),
   });
 
-  // The one-step flow: pick a module, describe it, get a ready quiz — no
+  // The one-step flow: pick a module, describe it, get a ready quiz  no
   // need to create an empty Quiz row by hand first. Creates the module's
   // quiz if it doesn't have one yet, otherwise reuses it and replaces its
   // questions.
@@ -114,7 +159,8 @@ export default function QuizzesPage() {
     onError: (err) => toast("error", aiErrorMessage(err)),
   });
 
-  const moduleTitle = (id: string) => modules.list.data?.find((m) => m._id === id)?.title ?? id;
+  const moduleTitle = (id?: string) => (id ? modules.list.data?.find((m) => m._id === id)?.title ?? id : "Standalone");
+  const categoryName = (id?: string) => (id ? categories.list.data?.find((c) => c._id === id)?.name ?? id : "");
 
   const filteredRows = useMemo(() => {
     const rows = list.data ?? [];
@@ -130,7 +176,12 @@ export default function QuizzesPage() {
   const openEdit = (quiz: Quiz) => {
     setForm({
       title: quiz.title,
-      module: quiz.module,
+      module: quiz.module ?? "",
+      category: quiz.category ?? "",
+      description: quiz.description ?? "",
+      imageUrl: quiz.imageUrl ?? "",
+      topics: (quiz.topics ?? []).join(", "),
+      estimatedMinutes: quiz.estimatedMinutes ?? 5,
       passingScorePercent: quiz.passingScorePercent,
       xpReward: quiz.xpReward,
       creditReward: quiz.creditReward,
@@ -145,7 +196,17 @@ export default function QuizzesPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const body = { ...form, course: modules.list.data?.find((m) => m._id === form.module)?.course };
+    const { topics, module, category, ...rest } = form;
+    const body = {
+      ...rest,
+      module: module || undefined,
+      category: category || undefined,
+      course: module ? modules.list.data?.find((m) => m._id === module)?.course : undefined,
+      topics: topics
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean),
+    };
     if (editing === "new") {
       create.mutate(body as never, {
         onSuccess: () => {
@@ -183,7 +244,7 @@ export default function QuizzesPage() {
     <div>
       <PageHeader
         title="Quizzes"
-        subtitle="Module-level knowledge checks."
+        subtitle="Module quizzes and standalone quizzes learners can take anytime."
         action={
           <div className="flex gap-2">
             <Button variant="ghost" onClick={() => setModuleGenOpen(true)}>
@@ -204,8 +265,17 @@ export default function QuizzesPage() {
         columns={[
           { header: "Title", render: (q) => <span className="font-medium">{q.title}</span> },
           { header: "Module", render: (q) => moduleTitle(q.module) },
+          { header: "Category", render: (q) => categoryName(q.category) },
           { header: "Passing %", render: (q) => q.passingScorePercent },
           { header: "XP", render: (q) => q.xpReward },
+          {
+            header: "Status",
+            render: (q) => (
+              <Badge variant={q.isPublished ? "success" : "neutral"} onClick={() => togglePublish(q)}>
+                {q.isPublished ? "Published" : "Draft"}
+              </Badge>
+            ),
+          },
           {
             header: "",
             render: (q) => (
@@ -244,9 +314,9 @@ export default function QuizzesPage() {
         }
       >
         <form id="quiz-form" className="grid grid-cols-1 gap-4 sm:grid-cols-2" onSubmit={handleSubmit}>
-          <Field label="Module">
-            <Select value={form.module} onChange={(e) => setForm({ ...form, module: e.target.value })} required>
-              <option value="">Select module</option>
+          <Field label="Module (optional)">
+            <Select value={form.module} onChange={(e) => setForm({ ...form, module: e.target.value })}>
+              <option value="">None  standalone quiz</option>
               {(modules.list.data ?? []).map((m) => (
                 <option key={m._id} value={m._id}>
                   {m.title}
@@ -254,9 +324,53 @@ export default function QuizzesPage() {
               ))}
             </Select>
           </Field>
+          <Field label="Category">
+            <Select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
+              <option value="">No category</option>
+              {(categories.list.data ?? []).map((c) => (
+                <option key={c._id} value={c._id}>
+                  {c.name}
+                </option>
+              ))}
+            </Select>
+          </Field>
           <Field label="Title">
             <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
           </Field>
+          <Field label="Estimated minutes">
+            <Input
+              type="number"
+              value={form.estimatedMinutes}
+              onChange={(e) => setForm({ ...form, estimatedMinutes: Number(e.target.value) })}
+            />
+          </Field>
+          <div className="sm:col-span-2">
+            <ImageUploadField
+              label="Quiz image"
+              value={form.imageUrl}
+              onChange={(url) => setForm({ ...form, imageUrl: url })}
+              folder="quizzes"
+            />
+          </div>
+          <div className="sm:col-span-2">
+            <Field label="Description">
+              <Textarea
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                rows={2}
+                placeholder="What this quiz tests the learner on."
+              />
+            </Field>
+          </div>
+          <div className="sm:col-span-2">
+            <Field label="Topics (comma-separated)">
+              <Input
+                value={form.topics}
+                onChange={(e) => setForm({ ...form, topics: e.target.value })}
+                placeholder="Variables, Functions, Arrays, Objects, ES6"
+              />
+            </Field>
+          </div>
           <Field label="Passing score %">
             <Input
               type="number"
@@ -286,7 +400,7 @@ export default function QuizzesPage() {
       <Modal
         open={!!generatingFor}
         onClose={() => (generateQuestions.isPending ? null : setGeneratingFor(null))}
-        title={`Generate Questions with AI${generatingFor ? ` — ${generatingFor.title}` : ""}`}
+        title={`Generate Questions with AI${generatingFor ? `  ${generatingFor.title}` : ""}`}
         footer={
           <>
             <Button variant="ghost" onClick={() => setGeneratingFor(null)} disabled={generateQuestions.isPending}>
@@ -308,7 +422,7 @@ export default function QuizzesPage() {
               value={genTopic}
               onChange={(e) => setGenTopic(e.target.value)}
               rows={4}
-              placeholder="e.g. HTML fundamentals — tags, elements, attributes, links, images, and semantic structure."
+              placeholder="e.g. HTML fundamentals  tags, elements, attributes, links, images, and semantic structure."
               disabled={generateQuestions.isPending}
             />
           </Field>
@@ -323,7 +437,7 @@ export default function QuizzesPage() {
             />
           </Field>
           <p className="text-xs text-textMuted">
-            This replaces any existing questions on this quiz with the newly generated set — review them on the Questions page
+            This replaces any existing questions on this quiz with the newly generated set  review them on the Questions page
             afterward.
           </p>
         </div>
@@ -367,7 +481,7 @@ export default function QuizzesPage() {
               value={moduleGenTopic}
               onChange={(e) => setModuleGenTopic(e.target.value)}
               rows={4}
-              placeholder="e.g. HTML fundamentals — tags, elements, attributes, links, images, and semantic structure."
+              placeholder="e.g. HTML fundamentals  tags, elements, attributes, links, images, and semantic structure."
               disabled={generateModuleQuiz.isPending}
             />
           </Field>

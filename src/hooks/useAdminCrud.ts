@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 
 // Thin wrapper around the generic /api/admin/<resource> CRUD endpoints
-// (see backend/src/routes/admin.ts) — every simple content-management
+// (see backend/src/routes/admin.ts)  every simple content-management
 // resource (categories, courses, modules, lessons, quizzes, questions,
 // projects, achievements) follows the same list/create/update/delete shape.
 export function useAdminCrud<T extends { _id: string }>(resource: string) {

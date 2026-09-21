@@ -17,7 +17,7 @@ interface Props {
 }
 
 // The one confirmation dialog every destructive action in the admin panel
-// should route through — nothing gets deleted on the first click.
+// should route through  nothing gets deleted on the first click.
 export function ConfirmDialog({
   open,
   title,

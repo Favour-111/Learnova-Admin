@@ -6,7 +6,7 @@ import { Field, Input } from "./form";
 import { api } from "@/lib/api";
 
 // Two ways to set the image: upload a file (goes straight to S3 via a
-// presigned URL, same pattern as the lesson video pipeline — the file
+// presigned URL, same pattern as the lesson video pipeline  the file
 // bytes never touch this Next.js server) or paste a URL directly. Either
 // way just ends up setting the same string field on the form.
 export function ImageUploadField({
@@ -18,7 +18,7 @@ export function ImageUploadField({
   label: string;
   value: string;
   onChange: (url: string) => void;
-  folder: "categories" | "courses";
+  folder: "categories" | "courses" | "quizzes";
 }) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +36,7 @@ export function ImageUploadField({
       await fetch(data.uploadUrl, { method: "PUT", headers: { "Content-Type": file.type }, body: file });
       onChange(data.imageUrl);
     } catch {
-      setError("Couldn't upload that image — try again.");
+      setError("Couldn't upload that image  try again.");
     } finally {
       setUploading(false);
     }

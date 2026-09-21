@@ -162,7 +162,7 @@ export default function CategoriesPage() {
           </Field>
           <div className="sm:col-span-2">
             <ImageUploadField
-              label="Learning Path image (optional — falls back to the icon above)"
+              label="Learning Path image (optional  falls back to the icon above)"
               value={form.imageUrl ?? ""}
               onChange={(url) => setForm({ ...form, imageUrl: url })}
               folder="categories"

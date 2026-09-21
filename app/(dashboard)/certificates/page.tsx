@@ -30,7 +30,7 @@ export default function CertificatesPage() {
       <DataTable
         columns={[
           { header: "Certificate ID", render: (c) => c.certificateId },
-          { header: "Learner", render: (c) => c.user?.name ?? "—" },
+          { header: "Learner", render: (c) => c.user?.name ?? "" },
           { header: "Course", render: (c) => c.courseName },
           { header: "Score", render: (c) => c.finalScore },
           { header: "Issued", render: (c) => new Date(c.completedAt).toLocaleDateString() },

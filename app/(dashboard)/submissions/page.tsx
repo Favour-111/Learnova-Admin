@@ -150,13 +150,13 @@ export default function SubmissionsPage() {
 
       <DataTable
         columns={[
-          { header: "Learner", render: (s) => s.user?.name ?? "—" },
-          { header: "Project", render: (s) => s.project?.title ?? "—" },
+          { header: "Learner", render: (s) => s.user?.name ?? "" },
+          { header: "Project", render: (s) => s.project?.title ?? "" },
           {
             header: "Status",
             render: (s) => <Badge variant={STATUS_STYLE[s.status]}>{s.status}</Badge>,
           },
-          { header: "Score", render: (s) => (s.currentAttempt ? `${s.currentAttempt.score}/100 ${s.currentAttempt.passed ? "✓" : ""}` : "—") },
+          { header: "Score", render: (s) => (s.currentAttempt ? `${s.currentAttempt.score}/100 ${s.currentAttempt.passed ? "✓" : ""}` : "") },
           { header: "Submitted", render: (s) => new Date(s.createdAt).toLocaleString() },
           {
             header: "",
@@ -199,12 +199,12 @@ export default function SubmissionsPage() {
               </div>
               <div>
                 <p className="text-textMuted">Repository</p>
-                <p className="break-all font-medium text-textPrimary">{submission.githubUrl ?? "—"}</p>
+                <p className="break-all font-medium text-textPrimary">{submission.githubUrl ?? ""}</p>
               </div>
               <div>
                 <p className="text-textMuted">Commit evaluated</p>
                 <p className="font-mono text-xs text-textPrimary">
-                  {submission.branch ?? "—"} @ {submission.commitSha?.slice(0, 8) ?? "—"}
+                  {submission.branch ?? ""} @ {submission.commitSha?.slice(0, 8) ?? ""}
                 </p>
               </div>
               <div>
@@ -222,7 +222,7 @@ export default function SubmissionsPage() {
 
             {submission.integrityFlags.length > 0 ? (
               <div className="rounded-xl bg-warning/10 p-3 text-sm text-warning">
-                <p className="mb-1 font-semibold">Integrity flags (for review — not an accusation)</p>
+                <p className="mb-1 font-semibold">Integrity flags (for review  not an accusation)</p>
                 <ul className="list-inside list-disc space-y-0.5">
                   {submission.integrityFlags.map((f) => (
                     <li key={f}>{f}</li>
@@ -236,7 +236,7 @@ export default function SubmissionsPage() {
                 <div className="rounded-xl border border-border p-4">
                   <div className="mb-3 flex items-center justify-between">
                     <p className="text-lg font-bold text-textPrimary">
-                      {attempt.score}/100 — Attempt {attempt.attemptNumber}
+                      {attempt.score}/100  Attempt {attempt.attemptNumber}
                     </p>
                     <Badge variant={attempt.passed ? "success" : "danger"}>{attempt.passed ? "PASSED" : "NEEDS IMPROVEMENT"}</Badge>
                   </div>
@@ -265,7 +265,7 @@ export default function SubmissionsPage() {
                           </span>
                           <span className="text-textPrimary">
                             {r.label}
-                            {r.note ? <span className="text-textMuted"> — {r.note}</span> : null}
+                            {r.note ? <span className="text-textMuted">  {r.note}</span> : null}
                           </span>
                         </li>
                       ))}
@@ -352,7 +352,7 @@ export default function SubmissionsPage() {
               </>
             ) : (
               <p className="text-sm text-textSecondary">
-                {submission.status === "failed" ? `Evaluation failed: ${submission.stageError}` : `In progress — stage: ${submission.stage}`}
+                {submission.status === "failed" ? `Evaluation failed: ${submission.stageError}` : `In progress  stage: ${submission.stage}`}
               </p>
             )}
           </div>

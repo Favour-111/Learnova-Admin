@@ -111,7 +111,7 @@ export default function LessonsPage() {
     // separately (create: inline, since a brand-new lesson has no
     // draft->published transition to notify anyone about; edit: via the
     // dedicated /publish route, which is what actually notifies enrolled
-    // users — only called when the status checkbox was actually changed,
+    // users  only called when the status checkbox was actually changed,
     // so editing other fields on an already-published lesson doesn't
     // re-notify anyone).
     const { youtubeUrl, isPublished, ...rest } = form;
@@ -177,7 +177,7 @@ export default function LessonsPage() {
         columns={[
           { header: "Title", render: (l) => <span className="font-medium">{l.title}</span> },
           { header: "Module", render: (l) => moduleTitle(l.module) },
-          { header: "Video", render: (l) => (l.videoId ? <Badge variant="success">YouTube ✓</Badge> : <Badge>—</Badge>) },
+          { header: "Video", render: (l) => (l.videoId ? <Badge variant="success">YouTube ✓</Badge> : <Badge></Badge>) },
           { header: "XP", render: (l) => l.xpReward },
           {
             header: "Status",

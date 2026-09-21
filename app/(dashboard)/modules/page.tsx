@@ -43,7 +43,7 @@ export default function ModulesPage() {
 
   const courseTitle = (id: string) => courses.list.data?.find((c) => c._id === id)?.title ?? id;
 
-  // Modules have no dedicated /publish route (unlike courses/lessons) —
+  // Modules have no dedicated /publish route (unlike courses/lessons) 
   // isPublished is just a normal field on the generic CRUD PUT.
   const togglePublish = (m: CourseModule) =>
     update.mutate(

@@ -46,7 +46,7 @@ function Row({ label, value }: { label: string; value?: string }) {
   return (
     <div className="flex justify-between border-b border-border pb-2">
       <span className="text-textSecondary">{label}</span>
-      <span className="font-semibold text-textPrimary">{value ?? "—"}</span>
+      <span className="font-semibold text-textPrimary">{value ?? ""}</span>
     </div>
   );
 }

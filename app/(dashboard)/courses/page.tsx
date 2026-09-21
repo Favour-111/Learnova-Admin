@@ -116,7 +116,7 @@ export default function CoursesPage() {
           toast("success", "Course created successfully");
           closeModal();
         },
-        onError: () => toast("error", "Couldn't create the course — check the fields and try again."),
+        onError: () => toast("error", "Couldn't create the course  check the fields and try again."),
       });
     } else if (editing) {
       update.mutate(
@@ -126,7 +126,7 @@ export default function CoursesPage() {
             toast("success", "Course updated");
             closeModal();
           },
-          onError: () => toast("error", "Couldn't update the course — check the fields and try again."),
+          onError: () => toast("error", "Couldn't update the course  check the fields and try again."),
         }
       );
     }
@@ -220,7 +220,7 @@ export default function CoursesPage() {
           </div>
           <div className="sm:col-span-2">
             <ImageUploadField
-              label="Course thumbnail (optional — falls back to a generated badge)"
+              label="Course thumbnail (optional  falls back to a generated badge)"
               value={form.thumbnailUrl ?? ""}
               onChange={(url) => setForm({ ...form, thumbnailUrl: url })}
               folder="courses"
@@ -281,7 +281,7 @@ export default function CoursesPage() {
               rows={8}
             />
             <p className="mt-1.5 text-xs text-textMuted">
-              Supports # / ## / ### headings, blank-line paragraphs, - bullet lists, 1. numbered lists, and **bold** text —
+              Supports # / ## / ### headings, blank-line paragraphs, - bullet lists, 1. numbered lists, and **bold** text 
               rendered natively in the app instead of a PDF.
             </p>
           </div>

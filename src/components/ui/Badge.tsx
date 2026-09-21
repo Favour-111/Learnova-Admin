@@ -12,8 +12,8 @@ interface Props {
   onClick?: () => void;
 }
 
-// Renders as a <button> (with a hover state) when `onClick` is passed —
-// e.g. the Published/Draft badge that toggles a course's publish state —
+// Renders as a <button> (with a hover state) when `onClick` is passed 
+// e.g. the Published/Draft badge that toggles a course's publish state 
 // otherwise a plain, non-interactive <span>.
 export function Badge({ variant = "neutral", children, onClick }: Props) {
   const className = `inline-flex items-center rounded-pill px-3 py-1 text-xs font-semibold transition-opacity ${VARIANTS[variant]} ${

@@ -48,7 +48,7 @@ export default function QuestionsPage() {
   const { toast } = useToast();
 
   const [search, setSearch] = useState("");
-  // Which quiz's question list is open — the questions inside that quiz are
+  // Which quiz's question list is open  the questions inside that quiz are
   // only ever shown/managed through this modal, not as a flat table.
   const [openQuiz, setOpenQuiz] = useState<Quiz | null>(null);
   const [editing, setEditing] = useState<Question | "new" | null>(null);
@@ -149,7 +149,7 @@ export default function QuestionsPage() {
 
   return (
     <div>
-      <PageHeader title="Questions" subtitle="Grouped by quiz — open a quiz to view and manage its questions." />
+      <PageHeader title="Questions" subtitle="Grouped by quiz  open a quiz to view and manage its questions." />
 
       <div className="mb-4">
         <SearchInput value={search} onChange={setSearch} placeholder="Search quizzes or questions..." />

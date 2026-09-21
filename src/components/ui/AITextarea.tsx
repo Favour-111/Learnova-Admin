@@ -23,7 +23,7 @@ interface Props {
 }
 
 // A Textarea with an AI-assist toolbar (rewrite/complete/shorten/lengthen)
-// above it — every long-text field in the admin panel should use this
+// above it  every long-text field in the admin panel should use this
 // instead of the plain Textarea so the same writing-help is available
 // everywhere consistently.
 export function AITextarea({ label, value, onChange, required, rows, maxLength }: Props) {
@@ -40,7 +40,7 @@ export function AITextarea({ label, value, onChange, required, rows, maxLength }
       const { data } = await api.post<{ result: string }>("/admin/ai/assist", { text: value, action });
       onChange(maxLength ? data.result.slice(0, maxLength) : data.result);
     } catch {
-      toast("error", "AI request failed — check the OpenAI configuration and try again.");
+      toast("error", "AI request failed  check the OpenAI configuration and try again.");
     } finally {
       setPendingAction(null);
     }

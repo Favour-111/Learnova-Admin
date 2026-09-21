@@ -35,7 +35,7 @@ export default function LeaderboardPage() {
       <DataTable
         columns={[
           { header: "Rank", render: (e) => `#${e.rank}` },
-          { header: "Learner", render: (e) => e.user?.name ?? "—" },
+          { header: "Learner", render: (e) => e.user?.name ?? "" },
           { header: "Weekly XP", render: (e) => e.weeklyXp.toLocaleString() },
         ]}
         rows={data?.entries ?? []}
@@ -45,7 +45,7 @@ export default function LeaderboardPage() {
 
       <p className="mt-4 text-xs text-textMuted">
         Weekly settlement (pay out top 5, freeze, reset) runs via{" "}
-        <code className="rounded bg-backgroundAlt px-1 py-0.5">npm run cron:settle-leaderboard</code> on the backend — point your
+        <code className="rounded bg-backgroundAlt px-1 py-0.5">npm run cron:settle-leaderboard</code> on the backend  point your
         host&apos;s scheduled-job feature at it.
       </p>
     </div>
